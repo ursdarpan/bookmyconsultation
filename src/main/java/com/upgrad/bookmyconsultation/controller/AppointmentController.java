@@ -32,7 +32,7 @@ public class AppointmentController {
 	
 		//save the appointment details to the database and save the response from the method used
 		//return http response using ResponseEntity
-	@PostMapping(value="/appointments",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> bookAppointment(@RequestBody AppointmentDTO appointmentDTO) throws InvalidInputException {
 		Appointment appointment=modelMapper.map(appointmentDTO,Appointment.class);
 		String appointmentId= appointmentService.appointment(appointment);
@@ -44,7 +44,7 @@ public class AppointmentController {
 		//get the appointment details using the appointmentId
 		//save the response
 		//return the response as an http response
-	@GetMapping(value="/appointmentsId/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value="{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity getAppointment(@PathVariable(name="id") String id) {
 		Appointment appointment=appointmentService.getAppointment(id);
 		AppointmentDTO appointmentDTO=modelMapper.map(appointment,AppointmentDTO.class);

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,7 @@ public class AppointmentService {
 		Appointment checkAppointment=appointmentRepository.findByDoctorIdAndTimeSlotAndAppointmentDate(
 				appointment.getDoctorId(),appointment.getTimeSlot(),appointment.getAppointmentDate());
 		if(checkAppointment==null){
+			appointment.setAppointmentId(UUID.randomUUID().toString());
 			savedAppointment=appointmentRepository.save(appointment);
 		} else {
 			throw new SlotUnavailableException();
