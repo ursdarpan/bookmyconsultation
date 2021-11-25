@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springfox.documentation.annotations.Cacheable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -44,14 +41,32 @@ public class DoctorService {
 		//Set the address in the doctor object with the response
 		//save the doctor object to the database
 		//return the doctor object
+	public Doctor register(Doctor doctor) throws InvalidInputException{
+		ValidationUtils.validate(doctor);
+		if(doctor.getAddress()==null){
+			throw new InvalidInputException(Collections.singletonList("Cant save doctor without address"));
+		}
+		doctor.setId(UUID.randomUUID().toString());
+		if(doctor.getSpeciality()==null){
+			doctor.setSpeciality(Speciality.GENERAL_PHYSICIAN);
+		}
+		Address address=doctor.getAddress();
+		Address savedAddress=addressRepository.save(address);
+		doctor.setAddress(savedAddress);
+		Doctor savedDoctor=doctorRepository.save(doctor);
+		return savedDoctor;
+	}
 	
 	
 	//create a method name getDoctor that returns object of type Doctor and has a String paramter called id
 		//find the doctor by id
 		//if doctor is found return the doctor
 		//else throw ResourceUnAvailableException
-
-	
+	public Doctor getDoctor(String id){
+		Doctor doctor=Optional.ofNullable(doctorRepository.findById(id)).get()
+				.orElseThrow(ResourceUnAvailableException::new);
+		return doctor;
+	}
 
 	public List<Doctor> getAllDoctorsWithFilters(String speciality) {
 

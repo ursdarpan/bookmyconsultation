@@ -1,11 +1,14 @@
 package com.upgrad.bookmyconsultation.controller;
 
+import com.upgrad.bookmyconsultation.dto.UserDTO;
 import com.upgrad.bookmyconsultation.entity.User;
 import com.upgrad.bookmyconsultation.exception.InvalidInputException;
 import com.upgrad.bookmyconsultation.service.AppointmentService;
 import com.upgrad.bookmyconsultation.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,9 @@ public class UserAdminController {
 	@Autowired
 	private AppointmentService appointmentService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<User> getUser(@RequestHeader("authorization") String accessToken,
@@ -41,9 +47,13 @@ public class UserAdminController {
 		//register the user
 	
 		//return http response with status set to OK
-	
-	
-
+	@PostMapping(value="/register",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserDTO> createUser(@RequestBody final UserDTO userDTO) throws InvalidInputException {
+		User user=modelMapper.map(userDTO,User.class);
+		User savedUser=userService.register(user);
+		UserDTO savedUserDTO=modelMapper.map(savedUser,UserDTO.class);
+		return new ResponseEntity(savedUserDTO,HttpStatus.OK);
+	}
 
 	@GetMapping("/{userId}/appointments")
 	public ResponseEntity getAppointmentForUser(@PathVariable("userId") String userId) {

@@ -1,12 +1,16 @@
 package com.upgrad.bookmyconsultation.repository;
 
 import com.upgrad.bookmyconsultation.entity.Rating;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
+public interface RatingsRepository extends JpaRepository<Rating,String> {
+    public List<Rating> findByDoctorId(String doctorId);
+}
 
 
 //mark it as repository
